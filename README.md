@@ -1,6 +1,6 @@
 # E-Can
 
-<a href="http://dev.tkmh.me/study/E-Can/" target="_blank">http://dev.tkmh.me/study/E-can/</a>
+<a href="http://dev.tkmh.me/study/E-Can/" target="_blank">http://dev.tkmh.me/study/E-Can/</a>
 
 こちらのデモのソースファイルです。
 
