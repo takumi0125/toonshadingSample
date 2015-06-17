@@ -84,7 +84,7 @@ void main(void){
     vec3 mNormal = (texture2D(normalMap, vUv) * 2.0 - 1.0).rgb;
     vec3 halfLE = normalize(vLightDirection + vEyeDirection);
     float s = clamp(dot(mNormal, vLightDirection), 0.1, 1.0);
-    float specular = pow(clamp(dot(mNormal, halfLE), 0.0, 1.0), 100.0);
+    float specular = pow(clamp(dot(mNormal, halfLE), 0.0, 1.0), 40.0);
 
     gl_FragColor = texture2D(texture, vUv) * texture2D(stepTexture, vec2(s, 1.0)) + vec4(vec3(specular), 1.0);
   }
@@ -127,6 +127,7 @@ class project.Main
       alpha: true
     @renderer.autoClear = false
     @renderer.shadowMapEnabled = true
+    @renderer.setPixelRatio window.devicePixelRatio
 
     @light = new THREE.PointLight 0xffffff, 10, 1000
     @light.position.set 0, 200, 500
