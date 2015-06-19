@@ -166,12 +166,8 @@ gulp.task 'concat', ->
     "#{SRC_DIR}#{ASSETS_DIR}/js/_lib/RenderPass.js"
     "#{SRC_DIR}#{ASSETS_DIR}/js/_lib/ShaderPass.js"
     "#{SRC_DIR}#{ASSETS_DIR}/js/_lib/ShaderPass.js"
-    "#{SRC_DIR}#{ASSETS_DIR}/js/_lib/ColladaLoader.js"
-    "#{SRC_DIR}#{ASSETS_DIR}/js/_lib/MTLLoader.js"
     "#{SRC_DIR}#{ASSETS_DIR}/js/_lib/OBJLoader.js"
-    "#{SRC_DIR}#{ASSETS_DIR}/js/_lib/OBJMTLLoader.js"
     "#{SRC_DIR}#{ASSETS_DIR}/js/_lib/TweenMax.min.js"
-    "#{SRC_DIR}#{ASSETS_DIR}/js/_lib/gl-matrix-min.js"
   ]
   .pipe plumber errorHandler: errorHandler 'concat'
   .pipe concat 'lib.js', { newLine: ';' }
