@@ -48,17 +48,19 @@ varying vec3 vLightDirection;
 
 void main() {
   vec3 pos = (modelMatrix * vec4(position, 1.0)).xyz;
-  if(edge) { pos += normal * edgeWidthRatio; }
+  if(edge) {
+    pos += normal * edgeWidthRatio;
+  } else {
+    vec3 eye = cameraPosition - pos;
+    vec3 light = lightPosition - pos;
 
-  vec3 eye = cameraPosition - pos;
-  vec3 light = lightPosition - pos;
+    vec3 t = normalize(cross(normal, vec3(0.0, 1.0, 0.0)));
+    vec3 b = cross(normal, t);
 
-  vec3 t = normalize(cross(normal, vec3(0.0, 1.0, 0.0)));
-  vec3 b = cross(normal, t);
-
-  vEyeDirection = normalize(vec3(dot(t, eye), dot(b, eye), dot(normal, eye)));
-  vLightDirection = normalize(vec3(dot(t, light), dot(b, light), dot(normal, light)));
-  vUv = uv;
+    vEyeDirection = normalize(vec3(dot(t, eye), dot(b, eye), dot(normal, eye)));
+    vLightDirection = normalize(vec3(dot(t, light), dot(b, light), dot(normal, light)));
+    vUv = uv;
+  }
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 }
@@ -83,10 +85,10 @@ void main(void){
   } else {
     vec3 mNormal = (texture2D(normalMap, vUv) * 2.0 - 1.0).rgb;
     vec3 halfLE = normalize(vLightDirection + vEyeDirection);
-    float s = clamp(dot(mNormal, vLightDirection), 0.1, 1.0);
+    float step = clamp(dot(mNormal, vLightDirection), 0.1, 1.0);
     float specular = pow(clamp(dot(mNormal, halfLE), 0.0, 1.0), 40.0);
 
-    gl_FragColor = texture2D(texture, vUv) * texture2D(stepTexture, vec2(s, 1.0)) + vec4(vec3(specular), 1.0);
+    gl_FragColor = texture2D(texture, vUv) * texture2D(stepTexture, vec2(step, 1.0)) + vec4(vec3(specular), 1.0);
   }
 }
 """
@@ -176,7 +178,6 @@ class project.Main
 
     @camera.lookAt @camera.target
     @toonShaderMaterial.uniforms.lightPosition.value = @light.position;
-
 
     @toonShaderMaterial.side = THREE.BackSide;
     @toonShaderMaterial.uniforms.edge.value = true;
