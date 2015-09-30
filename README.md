@@ -2,7 +2,7 @@
 
 <a href="http://dev.tkmh.me/study/toonshadingSample/" target="_blank">http://dev.tkmh.me/study/toonshadingSample/</a>
 
-こちらのデモのソースファイルです。
+こちらのデモのソースファイルです。解説記事は<a href="http://dev.tkmh.me/2015/09/24/268" target="_blank">こちら</a>。
 
 gulpを使用しています。
 
