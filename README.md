@@ -1,6 +1,6 @@
-# E-Can
+# Toonshading Sample
 
-<a href="http://dev.tkmh.me/study/E-Can/" target="_blank">http://dev.tkmh.me/study/E-Can/</a>
+<a href="http://dev.tkmh.me/study/E-Can/" target="_blank">http://dev.tkmh.me/study/toonshadingSample/</a>
 
 こちらのデモのソースファイルです。
 
