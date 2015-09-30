@@ -45,9 +45,9 @@
       }
     };
 
-    ToonShader.prototype.vertexShader = "uniform float edgeWidthRatio;\nuniform bool edge;\nuniform vec3 lightPosition;\n\nvarying vec2 vUv;\nvarying vec3 vEyeDirection;\nvarying vec3 vLightDirection;\n\nvoid main() {\n  vec3 pos = (modelMatrix * vec4(position, 1.0)).xyz;\n  if(edge) {\n    pos += normal * edgeWidthRatio;\n  } else {\n    vec3 eye = cameraPosition - pos;\n    vec3 light = lightPosition - pos;\n\n    vec3 t = normalize(cross(normal, vec3(0.0, 1.0, 0.0)));\n    vec3 b = cross(normal, t);\n\n    vEyeDirection = normalize(vec3(dot(t, eye), dot(b, eye), dot(normal, eye)));\n    vLightDirection = normalize(vec3(dot(t, light), dot(b, light), dot(normal, light)));\n    vUv = uv;\n  }\n\n  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);\n}";
+    ToonShader.prototype.vertexShader = "uniform float edgeWidthRatio;\nuniform bool edge;\nuniform vec3 lightPosition;\n\nvarying vec2 vUv;\nvarying vec3 vEyeDirection;\nvarying vec3 vLightDirection;\n\nvoid main() {\n  vec3 pos = (modelMatrix * vec4(position, 1.0)).xyz;\n  if(edge) {\n    pos += normal * edgeWidthRatio;\n  } else {\n    vec3 eye = cameraPosition - pos;\n    vec3 light = lightPosition - pos;\n\n    vec3 t = normalize(cross(normal, vec3(0.0, 1.0, 0.0)));\n    vec3 b = cross(normal, t);\n\n    vEyeDirection = normalize(vec3(dot(t, eye), dot(b, eye), dot(normal, eye)));\n    vLightDirection = normalize(vec3(dot(t, light), dot(b, light), dot(normal, light)));\n\n    vUv = uv;\n  }\n\n  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);\n}";
 
-    ToonShader.prototype.fragmentShader = "uniform vec3 lightDirection;\nuniform sampler2D stepTexture;\nuniform sampler2D texture;\nuniform sampler2D normalMap;\nuniform samplerCube envMap;\nuniform bool edge;\nuniform vec4 edgeColor;\n\nvarying vec2 vUv;\nvarying vec3 vEyeDirection;\nvarying vec3 vLightDirection;\n\nvoid main(void){\n  if(edge) {\n    gl_FragColor = edgeColor;\n  } else {\n    vec3 mNormal = (texture2D(normalMap, vUv) * 2.0 - 1.0).rgb;\n    vec3 halfLE = normalize(vLightDirection + vEyeDirection);\n    float step = clamp(dot(mNormal, vLightDirection), 0.1, 1.0);\n    float specular = pow(clamp(dot(mNormal, halfLE), 0.0, 1.0), 40.0);\n\n    gl_FragColor = texture2D(texture, vUv) * texture2D(stepTexture, vec2(step, 1.0)) + vec4(vec3(specular), 1.0);\n  }\n}";
+    ToonShader.prototype.fragmentShader = "uniform vec3 lightDirection;\nuniform sampler2D stepTexture;\nuniform sampler2D texture;\nuniform sampler2D normalMap;\nuniform samplerCube envMap;\nuniform bool edge;\nuniform vec4 edgeColor;\n\nvarying vec2 vUv;\nvarying vec3 vEyeDirection;\nvarying vec3 vLightDirection;\n\nvoid main(void){\n  if(edge) {\n    gl_FragColor = edgeColor;\n  } else {\n    vec3 mNormal = (texture2D(normalMap, vUv) * 2.0 - 1.0).rgb;\n    vec3 halfLE = normalize(vLightDirection + vEyeDirection);\n    float step = clamp(dot(mNormal, vLightDirection), 0.1, 1.0);\n    float specular = pow(clamp(dot(mNormal, halfLE), 0.0, 1.0), 100.0);\n\n    gl_FragColor = texture2D(texture, vUv) * texture2D(stepTexture, vec2(step, 1.0)) + vec4(vec3(specular), 1.0);\n  }\n}";
 
     function ToonShader(stepTexture, texture, normalMap, edgeColor, edgeWidthRatio) {
       if (edgeWidthRatio == null) {
@@ -107,21 +107,17 @@
       this.renderer.shadowMapEnabled = true;
       this.renderer.setPixelRatio(window.devicePixelRatio);
       this.light = new THREE.PointLight(0xffffff, 10, 1000);
-      this.light.position.set(0, 200, 500);
       this.scene.add(this.light);
       toonShader = new project.ToonShader(THREE.ImageUtils.loadTexture('assets/img/toonShaderStep.png'), THREE.ImageUtils.loadTexture('assets/img/texture.png'), THREE.ImageUtils.loadTexture('assets/img/normalMap.png'), new THREE.Vector4(0, 0, 0, 1), 1);
       this.toonShaderMaterial = new THREE.ShaderMaterial(toonShader);
       loader = new THREE.OBJLoader();
-      loader.load('assets/3d/ecan.obj', (function(_this) {
+      loader.load('assets/3d/can.obj', (function(_this) {
         return function(obj) {
-          var matrix, mesh;
+          var mesh;
           _this.scene.add(obj);
-          obj.scale.set(4, 4, 4);
+          obj.scale.set(3, 3, 3);
           mesh = obj.children[0];
-          mesh.material = _this.toonShaderMaterial;
-          matrix = new THREE.Matrix4();
-          matrix.makeRotationX(Math.PI);
-          return mesh.geometry.applyMatrix(matrix);
+          return mesh.material = _this.toonShaderMaterial;
         };
       })(this));
       this.controls = new THREE.TrackballControls(this.camera);
@@ -134,7 +130,7 @@
       this.time += 1;
       this.theta = Math.PI / 180 * this.time;
       this.controls.update();
-      this.light.position.set(500 * Math.sin(this.theta), 200, 500 * Math.cos(this.theta));
+      this.light.position.set(600 * Math.sin(this.theta), 400, 600 * Math.cos(this.theta));
       this.renderer.clear();
       this.camera.lookAt(this.camera.target);
       this.toonShaderMaterial.uniforms.lightPosition.value = this.light.position;

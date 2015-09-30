@@ -59,6 +59,7 @@ void main() {
 
     vEyeDirection = normalize(vec3(dot(t, eye), dot(b, eye), dot(normal, eye)));
     vLightDirection = normalize(vec3(dot(t, light), dot(b, light), dot(normal, light)));
+
     vUv = uv;
   }
 
@@ -86,7 +87,7 @@ void main(void){
     vec3 mNormal = (texture2D(normalMap, vUv) * 2.0 - 1.0).rgb;
     vec3 halfLE = normalize(vLightDirection + vEyeDirection);
     float step = clamp(dot(mNormal, vLightDirection), 0.1, 1.0);
-    float specular = pow(clamp(dot(mNormal, halfLE), 0.0, 1.0), 40.0);
+    float specular = pow(clamp(dot(mNormal, halfLE), 0.0, 1.0), 100.0);
 
     gl_FragColor = texture2D(texture, vUv) * texture2D(stepTexture, vec2(step, 1.0)) + vec4(vec3(specular), 1.0);
   }
@@ -132,7 +133,6 @@ class project.Main
     @renderer.setPixelRatio window.devicePixelRatio
 
     @light = new THREE.PointLight 0xffffff, 10, 1000
-    @light.position.set 0, 200, 500
     @scene.add @light
 
     toonShader = new project.ToonShader(
@@ -145,15 +145,11 @@ class project.Main
     @toonShaderMaterial = new THREE.ShaderMaterial toonShader
 
     loader = new THREE.OBJLoader()
-    loader.load 'assets/3d/ecan.obj', (obj)=>
+    loader.load 'assets/3d/can.obj', (obj)=>
       @scene.add obj
-      obj.scale.set 4, 4, 4
+      obj.scale.set 3, 3, 3
       mesh = obj.children[0]
       mesh.material = @toonShaderMaterial
-
-      matrix = new THREE.Matrix4()
-      matrix.makeRotationX Math.PI
-      mesh.geometry.applyMatrix matrix
 
     # control
     @controls = new THREE.TrackballControls @camera
@@ -172,7 +168,7 @@ class project.Main
 
     @controls.update()
 
-    @light.position.set 500 * Math.sin(@theta ), 200, 500 * Math.cos(@theta )
+    @light.position.set 600 * Math.sin(@theta ), 400, 600 * Math.cos(@theta )
 
     @renderer.clear()
 
