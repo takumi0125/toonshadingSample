@@ -1,4 +1,4 @@
-# Toonshading Sample
+# Toon shading Sample
 
 <a href="http://dev.tkmh.me/study/E-Can/" target="_blank">http://dev.tkmh.me/study/toonshadingSample/</a>
 
